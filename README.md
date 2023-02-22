@@ -11,6 +11,8 @@ This is why I created this project which helps to continuous and periodically bu
 - Alpine Linux
 - Windows
 
+The binaries are downloadable in the Releases section.
+
 We are holding no source code here, we're pull the code from the [official repository](https://github.com/openSYDE/openSYDE).
 
 ---

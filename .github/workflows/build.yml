@@ -23,7 +23,12 @@ jobs:
           sudo apt update && sudo apt install -y pcregrep
       - name: Read version from file
         run: |
-          pcregrep -io1 'PROJECT_VERSION_\S*\s+(\d+)' opensyde/opensyde_syde_sup/src/version_config.hpp | tr '\n' '.' | sed 's/.$//' > version.txt
+          MAJOR=`pcregrep -io1 '#\s*define\s+PROJECT_VERSION_MAJOR\s+(\d+)' opensyde/opensyde_syde_sup/src/version_config.hpp`
+          MINOR=`pcregrep -io1 '#\s*define\s+PROJECT_VERSION_MINOR\s+(\d+)' opensyde/opensyde_syde_sup/src/version_config.hpp`
+          RELEASE=`pcregrep -io1 '#\s*define\s+PROJECT_VERSION_RELEASE\s+(\d+)' opensyde/opensyde_syde_sup/src/version_config.hpp`
+          BUILD=`pcregrep -io1 '#\s*define\s+PROJECT_VERSION_BUILD\s+(\d+)' opensyde/opensyde_syde_sup/src/version_config.hpp`
+          echo "${MAJOR}.${MINOR}r${RELEASE}" > version.txt
+          cat version.txt
       - uses: actions/upload-artifact@v3
         with:
           name: Version
@@ -132,44 +137,38 @@ jobs:
           repository: openSYDE/openSYDE.git
           path: './opensyde'
           ref: master
-      - name: Set up Cygwin
-        uses: egor-tensin/setup-cygwin@v4
+      - name: 'Setup MSYS2'
+        uses: msys2/setup-msys2@v2
         with:
-          packages: perl nasm wget cmake ninja
-      # - name: Build openssl
-      #   run: |
-      #     wget https://www.openssl.org/source/openssl-1.1.1t.tar.gz
-      #     tar xzf openssl-1.1.1t.tar.gz
-      #     cd openssl-1.1.1t
-      #     perl Configure LIST
-      #     perl Configure mingw no-shared no-asm -m32 --prefix=c:\local\openssl1.1.1
-      #     make
-      #     make install
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          platform: x64
-      # - name: Get CMake
-      #   uses: symbitic/install-cmake@master
+          msystem: mingw32
+          update: true
+          install: >-
+            git
+            make
+            p7zip
+          pacboy: >-
+            toolchain:p
+            cmake:p
+            ninja:p
       - name: Build
         run: |
           mkdir opensyde/opensyde_syde_sup/build
-          ls opensyde/opensyde_syde_sup
           cd opensyde/opensyde_syde_sup/build
-          ls
-          cmake.exe "../pjt" "-GNinja" "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=../pjt/toolchain_windows.cmake"
+          cmake.exe ../pjt -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_TOOLCHAIN_FILE=../pjt/toolchain_windows.cmake"
           cmake.exe --build . --target all -- -j13
-        shell: C:\tools\cygwin\bin\bash.exe -o igncr '{0}'
+          VERSION=`cat $GITHUB_WORKSPACE/version.txt`
+          7z a SYDEsup-V${VERSION}-Windows.zip SYDEsup.exe
+        shell: msys2 {0}
       - uses: actions/upload-artifact@v3
         with:
           name: SYDEsup-Windows
-          path: ./opensyde/opensyde_syde_sup/build/SYDEsup.exe
+          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-*-Windows.zip
 
   deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [get-version, build-ubuntu, build-alpine]
+    needs: [get-version, build-ubuntu, build-alpine, build-windows]
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/download-artifact@v3
@@ -186,6 +185,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: SYDEsup-Alpine
+          path: release
+      - uses: actions/download-artifact@v3
+        with:
+          name: SYDEsup-Windows
           path: release
       - uses: ncipollo/release-action@v1
         with:
