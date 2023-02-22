@@ -6,7 +6,7 @@ on:
 
 # Cronjob
   schedule:
-    - cron: 5 5 * * *
+    - cron: 5 5 * * 0
 
 jobs:
   get-version:
@@ -135,7 +135,7 @@ jobs:
       - name: Set up Cygwin
         uses: egor-tensin/setup-cygwin@v4
         with:
-          packages: perl nasm wget cmake
+          packages: perl nasm wget cmake ninja
       # - name: Build openssl
       #   run: |
       #     wget https://www.openssl.org/source/openssl-1.1.1t.tar.gz
@@ -153,10 +153,11 @@ jobs:
       #   uses: symbitic/install-cmake@master
       - name: Build
         run: |
-          cd $GITHUB_WORKSPACE
-          mkdir opensyde\opensyde_syde_sup\build
-          cd opensyde\opensyde_syde_sup\build   
-          cmake.exe "..\pjt" "-GNinja" "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=..\pjt\toolchain_windows.cmake"
+          mkdir opensyde/opensyde_syde_sup/build
+          ls opensyde/opensyde_syde_sup
+          cd opensyde/opensyde_syde_sup/build
+          ls
+          cmake.exe "../pjt" "-GNinja" "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=../pjt/toolchain_windows.cmake"
           cmake.exe --build . --target all -- -j13
         shell: C:\tools\cygwin\bin\bash.exe -o igncr '{0}'
       - uses: actions/upload-artifact@v3
