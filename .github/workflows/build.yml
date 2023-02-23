@@ -61,13 +61,12 @@ jobs:
           cd ./opensyde/opensyde_syde_sup/build
           cmake ../pjt -DCMAKE_TOOLCHAIN_FILE=../pjt/toolchain_ubuntu_64bit.cmake
           cmake --build . --target all -- -j13
-          VERSION=`cat $GITHUB_WORKSPACE/version.txt`
-          tar -czvf SYDEsup-V${VERSION}-Ubuntu.tar.gz SYDEsup
+          tar -czvf SYDEsup-Ubuntu.tar.gz SYDEsup
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
           name: SYDEsup-Ubuntu
-          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-*-Ubuntu.tar.gz
+          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-Ubuntu.tar.gz
 
   build-alpine:
     runs-on: ubuntu-latest
@@ -115,13 +114,12 @@ jobs:
           cd ./opensyde/opensyde_syde_sup/build
           cmake ../pjt -DCMAKE_TOOLCHAIN_FILE=../pjt/toolchain_ubuntu_64bit.cmake
           cmake --build . --target all -- -j13
-          VERSION=`cat $GITHUB_WORKSPACE/version.txt`
-          tar -czvf SYDEsup-V${VERSION}-Alpine.tar.gz SYDEsup
+          tar -czvf SYDEsup-Alpine.tar.gz SYDEsup
         shell: alpine.sh --root {0}
       - uses: actions/upload-artifact@v3
         with:
           name: SYDEsup-Alpine
-          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-*-Alpine.tar.gz
+          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-Alpine.tar.gz
 
   build-windows:
     runs-on: windows-latest
@@ -153,13 +151,12 @@ jobs:
           cd opensyde/opensyde_syde_sup/build
           cmake.exe ../pjt -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_TOOLCHAIN_FILE=../pjt/toolchain_windows.cmake"
           cmake.exe --build . --target all -- -j13
-          VERSION=`cat $GITHUB_WORKSPACE/version.txt`
-          7z a SYDEsup-V${VERSION}-Windows.zip SYDEsup.exe
+          7z a SYDEsup-Windows.zip SYDEsup.exe
         shell: msys2 {0}
       - uses: actions/upload-artifact@v3
         with:
           name: SYDEsup-Windows
-          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-*-Windows.zip
+          path: ./opensyde/opensyde_syde_sup/build/SYDEsup-Windows.zip
 
   deploy:
     runs-on: ubuntu-latest
