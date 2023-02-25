@@ -5,7 +5,7 @@
 [![Docker Stars](https://badgen.net/docker/stars/developsessions/sydesup?icon=docker&label=stars)](https://hub.docker.com/r/developsessions/sydesup/)
 [![Docker Image Size](https://badgen.net/docker/size/developsessions/sydesup?icon=docker&label=image%20size)](https://hub.docker.com/r/developsessions/sydesup/)
 
-SYDEsup by [STW](https://www.stw-mobile-machines.com/) is a console application for updating the STW ECUs with a Service Update Package created with openSYDE GUI.
+SYDEsup by [STW](https://www.stw-mobile-machines.com/) is a console application for updating the STW ECUs with a Service Update Package created with the openSYDE GUI.
 
 SYDEsup is normally delivered directly as a Windows build from STW, but sometimes its necessary to transfer the application from an Linux OS.
 
@@ -20,7 +20,7 @@ We are holding no source code here, we're pull the code from the [official repos
 
 ## Docker
 
-There are also SYDEsup Docker images available.
+There are also SYDEsup [Docker](https://hub.docker.com/r/developsessions/sydesup/) images available.
 
 Alpine Image:
 ```bash
