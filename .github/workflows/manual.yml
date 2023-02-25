@@ -11,6 +11,8 @@ on:
 jobs:
   Delete-Old-Workflows:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2.0.3
